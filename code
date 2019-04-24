@@ -1,0 +1,65 @@
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+ 
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+ 
+public class FiveChessFrame extends JFrame implements MouseListener, Runnable {
+        private static final long serialVersionUID = 1L;
+        int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int hight = Toolkit.getDefaultToolkit().getScreenSize().height;
+        // 背景图片
+        BufferedImage bjImage = null;
+        // 保存棋子坐标
+        int x = 0;
+        int y = 0;
+        // 保存之前下过的棋子坐标
+        // 其中数据：0:表示这个点没有棋子 1：表示黑子 2：表示白子
+        int[][] allChess = new int[19][19];
+        // 标识当前是黑棋还是白旗下下一步
+        boolean isBlack = true;
+        // 标识当前游戏是否可以继续
+        boolean canPlay = true;
+        // 保存显示的提示信息
+        String message = "黑方先行";
+        // 保存最多拥有多少时间(秒)
+        int maxTime = 0;
+        // 做倒计时的线程类
+        Thread t = new Thread(this);
+        // 保存黑方与白方的剩余时间
+        int blackTime = 0;
+        int whiteTime = 0;
+        // 保存双方剩余时间的显示信息
+        String blackMessage = "无限制";
+        String whiteMessage = "无限制";
+         @SuppressWarnings("deprecation")
+        public FiveChessFrame() {
+                this.setTitle("五子棋");
+                this.setSize(500, 500);
+                this.setLocation((width - 500) / 2, (hight - 500) / 2);
+                this.addMouseListener(this);
+                // this.setResizable(false);
+                this.setVisible(true);
+ 
+                t.start();
+                t.suspend();// 线程挂起
+ 
+                // 刚打开的时候刷新屏幕,防止开始游戏时无法显示的问题
+                this.repaint();
+                this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                try {
+                        bjImage = ImageIO.read(new File("src/background.jpg"));
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+        }
+        
+}
